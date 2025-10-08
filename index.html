@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>一個只屬於妳的挑戰</title>
-    <!-- 快取清除 V6 -->
+    <!-- 快取清除 V7 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <style>
         /* --- 整體頁面樣式 --- */
@@ -26,7 +26,6 @@
             font-family: 'Georgia', 'Times New Roman', serif;
             margin: 0;
             padding: 20px 10px;
-            /* 【滾動修正】移除 overflow: hidden 和 flex 置中，允許頁面自然滾動 */
         }
 
         /* 動態背景畫布 */
@@ -50,7 +49,6 @@
             border: 1px solid var(--border-color);
             transition: all 0.5s ease;
             z-index: 1;
-            /* 【滾動修正】使用 margin 來置中 */
             margin: 80px auto 40px auto; 
         }
 
@@ -308,14 +306,14 @@
             mainContainer.innerHTML = content;
             const inputField = document.getElementById('answer-input');
             if (inputField) inputField.focus();
-            window.scrollTo(0, 0); // 每次渲染新謎題時，都滾動到頁面頂部
+            window.scrollTo(0, 0);
         }
         
         function renderSuccessView(index) {
             const puzzle = puzzleData[index];
             const photoHTML = puzzle.photo ? `<img src="${puzzle.photo}" alt="回憶照片">` : '';
             mainContainer.innerHTML = `<div class="success-view"><h2>記憶鎖定解除。妳證明了自己。</h2><p>一段塵封的時光，被妳親手還原了。</p>${photoHTML}<p class="personal-note">“${puzzle.note}”</p><p>這是妳應得的獎勵... 一枚關鍵的「線索碎片」：</p><p class="clue-reveal">${puzzle.clues.join(', ')}</p><hr><button onclick="nextStep()">> 前往下一道詰問</button></div>`;
-            window.scrollTo(0, 0); // 顯示成功畫面時，也滾動到頁面頂部
+            window.scrollTo(0, 0);
         }
 
         function checkAnswer() {
@@ -378,9 +376,10 @@
                     ${Array(8).fill('<div class="answer-slot" onclick="returnLetter(this)"></div>').join('')}
                 </div>
             `;
-
-            mainContainer.innerHTML = `<h2>恭喜通關，我的記憶主人。</h2><p>妳憑藉著智慧與默契，成功還原了所有被我藏起來的珍貴回憶，<br>證明了妳是它們唯一的主人。</p><p>現在，只剩下最後一道鎖。<br>解開它，就能找到我為妳準備的真正驚喜。</p><hr><p>請用妳收集到的 16 枚線索碎片，拼出最終的答案：</p><div class="letter-pool">${letterTilesHTML}</div><p><strong>最後的提示：</strong> 這是一個工整的「<strong>8+8</strong>」組合，就像它的品牌 Logo 一樣，對稱而又充滿個性。答案本身，充滿了英倫的搖滾精神喔。</p><div class="answer-slots-container">${answerSlotsHTML}</div><div class="input-area"><button onclick="checkFinalAnswer()">揭曉最終答案</button></div>`;
-             window.scrollTo(0, 0);
+            
+            // 【結局更新】採用版本A的文案
+            mainContainer.innerHTML = `<h2>妳看，妳都記得！</h2><p>這些我們共同經歷的瞬間，因為妳還記得，而變得更加珍貴。</p><p>現在，旅程只剩下最後一個小小的關卡。<br>請將妳收集到的所有線索碎片，拼湊出最後的答案，它會為妳揭曉我準備的禮物。</p><hr><div class="letter-pool">${letterTilesHTML}</div><p><strong>最後的提示：</strong> 這是一個工整的「<strong>8+8</strong>」組合，就像它的品牌 Logo 一樣，對稱而又充滿個性。答案本身，充滿了英倫的搖滾精神喔。</p><div class="answer-slots-container">${answerSlotsHTML}</div><div class="input-area"><button onclick="checkFinalAnswer()">揭曉最終答案</button></div>`;
+            window.scrollTo(0, 0);
         }
 
         function selectLetter(tileElement, letter) {
@@ -414,7 +413,8 @@
 
             if (word1 === finalAnswer.part1 && word2 === finalAnswer.part2) {
                 playSound('correct');
-                mainContainer.innerHTML = `<h1>完全正確！</h1><h2>生日快樂，我生命中唯一的主角。</h2><p>這十個碎片，只是我們故事的序章。<br>接下來，還有無數的空白等著我們一起填滿。</p><hr><div class="input-area"><button id="reveal-button" onclick="revealGift()">> 揭曉我的最終獎勵</button></div>`;
+                // 【結局更新】採用版本A的文案
+                mainContainer.innerHTML = `<h1>拼對了！妳真的太棒了！</h1><h2>生日快樂，我最愛的 Christine。</h2><p>希望妳喜歡這趟小小的回憶旅行，也希望妳會喜歡這份禮物。我們的故事，未完待續喔！</p><hr><div class="input-area"><button id="reveal-button" onclick="revealGift()">> 揭曉我的最終獎勵</button></div>`;
             } else {
                 playSound('incorrect');
                 alert("不對喔，再檢查一下拼字！");
@@ -430,7 +430,8 @@
             giftText.textContent = `現在，請前往 ${finalGiftLocation}，領取屬於妳的搖滾徽章吧！`;
 
             const signature = document.createElement('p');
-            signature.textContent = `—— 不再是竊賊，而是永遠愛妳的，${yourName}`;
+            // 【結局更新】採用更匹配的署名
+            signature.textContent = `—— 永遠愛妳的，${yourName}`;
             
             button.replaceWith(giftText);
             mainContainer.appendChild(document.createElement('hr'));
