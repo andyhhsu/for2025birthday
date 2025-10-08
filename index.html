@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>一個只屬於妳的挑戰</title>
-    <!-- 快取清除 V4 -->
+    <!-- 快取清除 V6 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <style>
         /* --- 整體頁面樣式 --- */
@@ -24,13 +24,9 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: 'Georgia', 'Times New Roman', serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             margin: 0;
             padding: 20px 10px;
-            overflow: hidden; /* 隱藏捲軸，讓背景更完整 */
+            /* 【滾動修正】移除 overflow: hidden 和 flex 置中，允許頁面自然滾動 */
         }
 
         /* 動態背景畫布 */
@@ -40,7 +36,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* 確保在最底層 */
+            z-index: -1;
         }
         
         .container {
@@ -54,6 +50,8 @@
             border: 1px solid var(--border-color);
             transition: all 0.5s ease;
             z-index: 1;
+            /* 【滾動修正】使用 margin 來置中 */
+            margin: 80px auto 40px auto; 
         }
 
         h1, h2 { color: var(--primary-color); }
@@ -119,8 +117,7 @@
             z-index: 100;
             text-align: center;
         }
-        .container { margin-top: 60px; }
-
+        
         .success-view img {
             max-width: 100%;
             height: auto;
@@ -131,7 +128,6 @@
         .success-view .personal-note { font-style: italic; font-size: 1.2em; color: #8affc1; }
         .success-view .clue-reveal { font-size: 1.5em; color: var(--secondary-color); font-weight: bold; }
         
-        /* 最終單字遊戲樣式 */
         .letter-pool { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 20px 0; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 5px; }
         .letter-tile { background-color: var(--secondary-color); color: var(--bg-color); width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; font-size: 1.5em; font-weight: bold; border-radius: 5px; cursor: pointer; transition: all 0.3s ease; }
         .letter-tile:hover { transform: scale(1.1); }
@@ -142,7 +138,6 @@
         
         hr { border: none; border-top: 1px solid var(--border-color); margin: 30px 0; }
 
-        /* 答題反饋動畫 */
         .shake { animation: shake-horizontal 0.5s ease-in-out; }
         .correct-flash { animation: correct-flash 0.5s ease-in-out; }
         @keyframes shake-horizontal {
@@ -155,7 +150,6 @@
             50% { box-shadow: 0 0 25px var(--accent-color); }
         }
 
-        /* 最終揭曉動畫 */
         #gift-location { opacity: 0; transition: opacity 1s ease-in-out; }
         #gift-location.revealed { opacity: 1; }
     </style>
@@ -184,35 +178,35 @@
                 riddle: "這道謎題，無關異國風情，只關乎一個重要的『第一次』。為了慶祝你的第一個生日，我訂的餐廳不是牛排，也不是義大利麵。請問，那個為我們揭開無數慶祝序幕的二字料理『風格』是什麼？",
                 answer: "泰式",
                 clues: ["T", "O"],
-                photo: "photo2.jpg",
+                photo: "https://andyhhsu.github.io/for2025birthday/photo2.jpg",
                 note: "那天的主角是你，但最秀色可餐的也是你。"
             },
             {
                 riddle: "我們的首次旅行。那座城市被現代人戲稱為『一個適合眾神居住、卻不太適合人類工作的奇幻之地』，並且，它是台灣六都之中，至今唯一沒有捷運系統通車的直轄市。這座步調獨特的城市是？",
                 answer: "台南",
                 clues: ["W", "O"],
-                photo: "photo3.jpg",
+                photo: "https://andyhhsu.github.io/for2025birthday/photo3.jpg",
                 note: "我們旅程的起點，也是故事的序篇。"
             },
             {
                 riddle: "這道謎題，關於我們最平凡也最珍貴的日常。無論是在公園的草地上，還是在河堤的夕陽下，總有『他』的身影陪著我們散步。請問，我們最棒的散步夥伴，他的五個字母英文名字是？",
                 answer: "Sunny",
                 clues: ["D", "I"],
-                photo: "photo4.jpg",
+                photo: "https://andyhhsu.github.io/for2025birthday/photo4.jpg",
                 note: "我們生命中最溫暖、最療癒的存在。"
             },
             {
                 riddle: "關於我們的第一次出國旅行。比起大阪的章魚燒和京都的清水寺，我猜你印象最深的，應該是在奈良被鹿『追殺』的陰影吧？請問，這個讓你留下爆笑陰影的二字國度是哪裡？",
                 answer: "日本",
                 clues: ["W", "E"],
-                photo: "photo5.jpg",
+                photo: "https://andyhhsu.github.io/for2025birthday/photo5.jpg",
                 note: "希望奈良的鹿，沒有在你心裡留下太大的陰影（笑）。"
             },
             {
                 riddle: "那場演唱會，對我們來說不只是一晚的狂歡，而是一個『新篇章』的開始。從那天起，一起追蹤她們的新歌、看她们的消息，成了我們之間的一個新默契。請問，開啟了我們這個共同話題的團體，其名稱為何？",
                 answer: "babymonster",
                 clues: ["N", "N"],
-                photo: "photo6.jpg",
+                photo: "https://andyhhsu.github.io/for2025birthday/photo6.jpg",
                 note: "陪你一起聲嘶力竭，是我做過最搖滾的事。"
             },
             {
@@ -226,21 +220,21 @@
                 riddle: "我們對一個角色的愛，可以體現在很多地方。從追遍各地的快閃店，到收集越來越多的週邊，最經典的還是那次路跑——我們興沖沖地報了名，結果天氣一熱，直接變成他的個人拍照會。請問，這位讓我們心甘情願為他做這麼多傻事的綠色夥伴，他的英文名字是？",
                 answer: "joguman",
                 clues: ["V"],
-                photo: "photo8.jpg",
+                photo: "https://andyhhsu.github.io/for2025birthday/photo8.jpg",
                 note: "為了他做的傻事，現在回想起來都覺得好可愛。"
             },
             {
                 riddle: "我們共同達到的最高點。從那裡俯瞰，腳下的城市像一塊精密的電路板，河流是閃爍的銀色焊錫。這座建築坐落於首爾一個巨大的複合園區內，旁邊就是一座著名的室內遊樂園。它的三字名稱是？",
                 answer: "樂天塔",
                 clues: ["I"],
-                photo: "photo9.jpg",
+                photo: "https://andyhhsu.github.io/for2025birthday/photo9.jpg",
                 note: "和你一起看過的風景，永遠是最美的。"
             },
             {
                 riddle: "那趟外島之旅，白天熱得讓人懷疑人生，但夜晚卻給了我們最棒的驚喜。我們站在漆黑的海邊，看著浪花拍打出藍色的螢光，留下了那張珍貴的合照。請問，那片成為我們最夢幻合照背景的奇景，它的三字名稱是什麼？",
                 answer: "藍眼淚",
                 clues: ["V"],
-                photo: "photo10.jpg",
+                photo: "https://andyhhsu.github.io/for2025birthday/photo10.jpg",
                 note: "那片藍色的海，是我們今年最棒的驚喜。"
             }
         ];
@@ -248,7 +242,6 @@
         const finalAnswer = { part1: "vivienne", part2: "westwood" };
         const finalGiftLocation = "臥室的書櫃第三層"; // 【請務必修改這裡】
 
-        // 音效模組
         const sounds = {
             correct: new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 } }).toDestination(),
             incorrect: new Tone.Synth({ oscillator: { type: "square" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.2 } }).toDestination(),
@@ -261,7 +254,6 @@
             if (type === 'place') sounds.place.triggerAttackRelease("C2", "8n");
         }
 
-        // 背景動畫
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let stars = [];
@@ -287,7 +279,6 @@
         window.addEventListener('resize', () => { resizeCanvas(); createStars(); });
         resizeCanvas(); createStars(); animateStars();
 
-        // 遊戲核心邏輯
         const mainContainer = document.getElementById('main-container');
         let gameState = { currentPuzzle: 0, completedPuzzles: [], collectedClues: [] };
 
@@ -317,14 +308,14 @@
             mainContainer.innerHTML = content;
             const inputField = document.getElementById('answer-input');
             if (inputField) inputField.focus();
+            window.scrollTo(0, 0); // 每次渲染新謎題時，都滾動到頁面頂部
         }
         
         function renderSuccessView(index) {
             const puzzle = puzzleData[index];
-            const cacheBuster = new Date().getTime(); // 建立一個獨一無二的時間戳
-            // 【快取修正】在圖片檔名後面加上 ?v=時間戳
-            const photoHTML = puzzle.photo ? `<img src="${puzzle.photo}?v=${cacheBuster}" alt="回憶照片">` : '';
+            const photoHTML = puzzle.photo ? `<img src="${puzzle.photo}" alt="回憶照片">` : '';
             mainContainer.innerHTML = `<div class="success-view"><h2>記憶鎖定解除。妳證明了自己。</h2><p>一段塵封的時光，被妳親手還原了。</p>${photoHTML}<p class="personal-note">“${puzzle.note}”</p><p>這是妳應得的獎勵... 一枚關鍵的「線索碎片」：</p><p class="clue-reveal">${puzzle.clues.join(', ')}</p><hr><button onclick="nextStep()">> 前往下一道詰問</button></div>`;
+            window.scrollTo(0, 0); // 顯示成功畫面時，也滾動到頁面頂部
         }
 
         function checkAnswer() {
@@ -389,6 +380,7 @@
             `;
 
             mainContainer.innerHTML = `<h2>恭喜通關，我的記憶主人。</h2><p>妳憑藉著智慧與默契，成功還原了所有被我藏起來的珍貴回憶，<br>證明了妳是它們唯一的主人。</p><p>現在，只剩下最後一道鎖。<br>解開它，就能找到我為妳準備的真正驚喜。</p><hr><p>請用妳收集到的 16 枚線索碎片，拼出最終的答案：</p><div class="letter-pool">${letterTilesHTML}</div><p><strong>最後的提示：</strong> 這是一個工整的「<strong>8+8</strong>」組合，就像它的品牌 Logo 一樣，對稱而又充滿個性。答案本身，充滿了英倫的搖滾精神喔。</p><div class="answer-slots-container">${answerSlotsHTML}</div><div class="input-area"><button onclick="checkFinalAnswer()">揭曉最終答案</button></div>`;
+             window.scrollTo(0, 0);
         }
 
         function selectLetter(tileElement, letter) {
@@ -460,7 +452,6 @@
         }
         updateClueTracker();
         
-        // 供您自己測試用的重設功能 (在瀏覽器開發者工具的Console中輸入 resetGame() 來使用)
         function resetGame() { if (confirm("確定要重設所有遊戲進度嗎？")) { localStorage.removeItem('birthdayPuzzleState'); location.reload(); } }
     </script>
 </body>
