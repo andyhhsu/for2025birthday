@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>一個只屬於妳的挑戰</title>
+    <!-- 快取清除 V4 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <style>
         /* --- 整體頁面樣式 --- */
         :root {
@@ -14,13 +16,10 @@
             --secondary-color: #f1fa8c;
             --accent-color: #50fa7b;
             --border-color: #bd93f9;
+            --error-color: #ff5555;
         }
-        html {
-            box-sizing: border-box;
-        }
-        *, *:before, *:after {
-            box-sizing: inherit;
-        }
+        html { box-sizing: border-box; }
+        *, *:before, *:after { box-sizing: inherit; }
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
@@ -30,14 +29,23 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px 10px; /* 增加左右邊距給手機 */
-            transition: background-color 0.5s ease;
+            padding: 20px 10px;
+            overflow: hidden; /* 隱藏捲軸，讓背景更完整 */
         }
 
-        /* --- 主要內容容器 --- */
+        /* 動態背景畫布 */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* 確保在最底層 */
+        }
+        
         .container {
             background-color: var(--container-bg);
-            padding: 20px; /* 手機上內距小一點 */
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             max-width: 600px;
@@ -45,14 +53,13 @@
             text-align: center;
             border: 1px solid var(--border-color);
             transition: all 0.5s ease;
+            z-index: 1;
         }
 
-        /* --- 標題與文字 --- */
         h1, h2 { color: var(--primary-color); }
         h1 { font-size: 1.8em; }
         p { line-height: 1.8; font-size: 1.1em; }
 
-        /* --- 謎題 --- */
         .riddle {
             font-style: italic;
             color: var(--secondary-color);
@@ -62,11 +69,10 @@
             margin: 20px 0;
         }
 
-        /* --- 輸入區域 --- */
         .input-area {
             margin-top: 20px;
             display: flex;
-            flex-direction: column; /* 手機上垂直排列 */
+            flex-direction: column;
             align-items: center;
             gap: 10px;
         }
@@ -78,8 +84,9 @@
             color: var(--text-color);
             font-size: 1em;
             text-align: center;
-            width: 100%; /* 填滿寬度 */
-            max-width: 300px; /* 但不要過寬 */
+            width: 100%;
+            max-width: 300px;
+            transition: all 0.3s ease;
         }
         button {
             padding: 12px 20px;
@@ -94,12 +101,8 @@
             width: 100%;
             max-width: 300px;
         }
-        button:hover {
-            opacity: 0.9;
-            transform: scale(1.02);
-        }
+        button:hover { opacity: 0.9; transform: scale(1.02); }
 
-        /* --- 線索紀錄欄位 --- */
         #clue-tracker {
             position: fixed;
             top: 10px;
@@ -118,7 +121,6 @@
         }
         .container { margin-top: 60px; }
 
-        /* --- 成功過關的樣式 --- */
         .success-view img {
             max-width: 100%;
             height: auto;
@@ -126,99 +128,56 @@
             margin: 20px 0;
             border: 2px solid var(--accent-color);
         }
-        .success-view .personal-note {
-            font-style: italic;
-            font-size: 1.2em;
-            color: #8affc1;
-        }
-         .success-view .clue-reveal {
-            font-size: 1.5em;
-            color: var(--secondary-color);
-            font-weight: bold;
-        }
+        .success-view .personal-note { font-style: italic; font-size: 1.2em; color: #8affc1; }
+        .success-view .clue-reveal { font-size: 1.5em; color: var(--secondary-color); font-weight: bold; }
         
-        /* --- 【新功能】最終單字遊戲樣式 --- */
-        .letter-pool {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
-            padding: 10px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 5px;
-        }
-        .letter-tile {
-            background-color: var(--secondary-color);
-            color: var(--bg-color);
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5em;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .letter-tile:hover {
-            transform: scale(1.1);
-        }
-        .letter-tile.used {
-            opacity: 0.2;
-            pointer-events: none;
-        }
-        .answer-slots-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        .answer-word {
-            display: flex;
-            gap: 5px;
-        }
-        .answer-slot {
-            width: 35px;
-            height: 45px;
-            background-color: var(--bg-color);
-            border: 2px solid var(--border-color);
-            border-radius: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5em;
-            color: var(--text-color);
-            font-weight: bold;
-            cursor: pointer;
-        }
-        /* --- -------------------- --- */
+        /* 最終單字遊戲樣式 */
+        .letter-pool { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 20px 0; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 5px; }
+        .letter-tile { background-color: var(--secondary-color); color: var(--bg-color); width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; font-size: 1.5em; font-weight: bold; border-radius: 5px; cursor: pointer; transition: all 0.3s ease; }
+        .letter-tile:hover { transform: scale(1.1); }
+        .letter-tile.used { opacity: 0.2; pointer-events: none; }
+        .answer-slots-container { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 20px 0; }
+        .answer-word { display: flex; gap: 5px; }
+        .answer-slot { width: 35px; height: 45px; background-color: var(--bg-color); border: 2px solid var(--border-color); border-radius: 5px; display: flex; justify-content: center; align-items: center; font-size: 1.5em; color: var(--text-color); font-weight: bold; cursor: pointer; }
+        
+        hr { border: none; border-top: 1px solid var(--border-color); margin: 30px 0; }
 
-        hr {
-            border: none;
-            border-top: 1px solid var(--border-color);
-            margin: 30px 0;
+        /* 答題反饋動畫 */
+        .shake { animation: shake-horizontal 0.5s ease-in-out; }
+        .correct-flash { animation: correct-flash 0.5s ease-in-out; }
+        @keyframes shake-horizontal {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
         }
+        @keyframes correct-flash {
+            0%, 100% { box-shadow: 0 0 10px var(--accent-color); }
+            50% { box-shadow: 0 0 25px var(--accent-color); }
+        }
+
+        /* 最終揭曉動畫 */
+        #gift-location { opacity: 0; transition: opacity 1s ease-in-out; }
+        #gift-location.revealed { opacity: 1; }
     </style>
 </head>
 <body>
+    <canvas id="bg-canvas"></canvas>
     <div id="clue-tracker">線索碎片：<span id="clue-display"></span></div>
     <div class="container" id="main-container"></div>
+
     <script>
         // ===================================================================================
         // ============================  遊戲資料庫 & 個人化設定  ============================
         // ===================================================================================
 
-        const yourName = "你的名字"; 
+        const yourName = "你的名字"; // 【請修改】
 
         const puzzleData = [
             {
                 riddle: "年份，是我們記憶中最後一個可以自由呼吸、無需口罩的完整年份。而日期，在俄羅斯，這一天是紀念勝利的『勝利日』。",
                 answer: ["20190509", "2019/05/09"],
                 clues: ["E", "S"],
-                photo: null, 
+                photo: null,
                 note: "從那天起，我們之間，日日是好日。"
             },
             {
@@ -247,7 +206,7 @@
                 answer: "日本",
                 clues: ["W", "E"],
                 photo: "photo5.jpg",
-                note: "去哪裡不重要，重要的是和誰一起去。"
+                note: "希望奈良的鹿，沒有在你心裡留下太大的陰影（笑）。"
             },
             {
                 riddle: "那場演唱會，對我們來說不只是一晚的狂歡，而是一個『新篇章』的開始。從那天起，一起追蹤她們的新歌、看她们的消息，成了我們之間的一個新默契。請問，開啟了我們這個共同話題的團體，其名稱為何？",
@@ -259,42 +218,78 @@
             {
                 riddle: "那款充滿了我們共同焦慮的遊戲。它的背景音樂，就是我們互相大喊『飯燒焦了！』和『盤子在哪？！』的聲音。遊戲的單一英文詞標題，完美描述了我們 90% 的料理成品最終的狀態。它是什麼？",
                 answer: "overcooked",
-                clues: ["E", "V"],
+                clues: ["E"],
                 photo: null,
                 note: "就算手忙腳亂，我們依然是彼此的最佳拍檔。"
             },
             {
-                riddle: "這道謎題，關於一個我們即將面臨的挑戰。那間密室的主題，巧妙地顛覆了日常：它將一個本該是洗滌疲憊、最私密的放鬆行為，變成了一場懸疑驚悚的考驗。這間密室的單一漢字名稱，正是那個被它重新定義的『日常行為』。它是？",
-                answer: "浴",
-                clues: ["I"],
+                riddle: "我們對一個角色的愛，可以體現在很多地方。從追遍各地的快閃店，到收集越來越多的週邊，最經典的還是那次路跑——我們興沖沖地報了名，結果天氣一熱，直接變成他的個人拍照會。請問，這位讓我們心甘情願為他做這麼多傻事的綠色夥伴，他的英文名字是？",
+                answer: "joguman",
+                clues: ["V"],
                 photo: "photo8.jpg",
-                note: "無論現實有多少謎，只要和你一起，就一定能解開。"
+                note: "為了他做的傻事，現在回想起來都覺得好可愛。"
             },
             {
                 riddle: "我們共同達到的最高點。從那裡俯瞰，腳下的城市像一塊精密的電路板，河流是閃爍的銀色焊錫。這座建築坐落於首爾一個巨大的複合園區內，旁邊就是一座著名的室內遊樂園。它的三字名稱是？",
                 answer: "樂天塔",
-                clues: ["V"],
+                clues: ["I"],
                 photo: "photo9.jpg",
                 note: "和你一起看過的風景，永遠是最美的。"
+            },
+            {
+                riddle: "那趟外島之旅，白天熱得讓人懷疑人生，但夜晚卻給了我們最棒的驚喜。我們站在漆黑的海邊，看著浪花拍打出藍色的螢光，留下了那張珍貴的合照。請問，那片成為我們最夢幻合照背景的奇景，它的三字名稱是什麼？",
+                answer: "藍眼淚",
+                clues: ["V"],
+                photo: "photo10.jpg",
+                note: "那片藍色的海，是我們今年最棒的驚喜。"
             }
         ];
 
-        const finalAnswer = {
-            part1: "vivienne",
-            part2: "westwood"
-        };
+        const finalAnswer = { part1: "vivienne", part2: "westwood" };
         const finalGiftLocation = "臥室的書櫃第三層"; // 【請務必修改這裡】
 
-        // ===================================================================================
-        // ================================  遊戲核心邏輯  =================================
-        // ===================================================================================
-
-        const mainContainer = document.getElementById('main-container');
-        let gameState = {
-            currentPuzzle: 0,
-            completedPuzzles: [], // 【BUG修正】用這個來追蹤已完成的題目
-            collectedClues: []
+        // 音效模組
+        const sounds = {
+            correct: new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 } }).toDestination(),
+            incorrect: new Tone.Synth({ oscillator: { type: "square" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.2 } }).toDestination(),
+            place: new Tone.MembraneSynth({ pitchDecay: 0.01, octaves: 2, envelope: { attack: 0.001, decay: 0.2, sustain: 0 } }).toDestination()
         };
+        function playSound(type) {
+            if (Tone.context.state !== 'running') { Tone.start(); }
+            if (type === 'correct') sounds.correct.triggerAttackRelease("C5", "8n");
+            if (type === 'incorrect') sounds.incorrect.triggerAttackRelease("C3", "8n");
+            if (type === 'place') sounds.place.triggerAttackRelease("C2", "8n");
+        }
+
+        // 背景動畫
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        function createStars() {
+            stars = [];
+            for (let i = 0; i < 100; i++) {
+                stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, radius: Math.random() * 1.5, alpha: Math.random(), dAlpha: Math.random() * 0.01 - 0.005 });
+            }
+        }
+        function animateStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => {
+                star.alpha += star.dAlpha;
+                if (star.alpha <= 0 || star.alpha >= 1) star.dAlpha *= -1;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(248, 248, 242, ${star.alpha})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(animateStars);
+        }
+        window.addEventListener('resize', () => { resizeCanvas(); createStars(); });
+        resizeCanvas(); createStars(); animateStars();
+
+        // 遊戲核心邏輯
+        const mainContainer = document.getElementById('main-container');
+        let gameState = { currentPuzzle: 0, completedPuzzles: [], collectedClues: [] };
 
         function saveGame() { localStorage.setItem('birthdayPuzzleState', JSON.stringify(gameState)); }
         function loadGame() {
@@ -314,25 +309,28 @@
 
         function renderPuzzle(index) {
             let content = '';
-            // 【邏輯優化】只有第一次玩 (localStorage為空) 且是第一題時，才顯示開場白
-            if (index === 0 && !localStorage.getItem('birthdayPuzzleState')) {
-                content += `<h1>致我最珍貴的對手，</h1><p>我擅自借走了九個我們之間最閃亮的記憶碎片，<br>將它們鎖在了這個只為妳開啟的空間裡。</p><p>別擔心，它們安然無恙，<br>只是在等待它們真正的主人前來認領。</p><p><strong>而妳，是唯一的挑戰者。</strong></p><p>接下來的每一道詰問，都對應著一段被封鎖的時光。<br>當妳給出正確的答案，那段記憶便會「還原」，<br>同時，妳將獲得一枚解鎖最終祕密的「線索碎片」。</p><p>集齊所有碎片，妳就能揭開我為妳準備的、最終的驚喜。</p><p>那麼，準備好了嗎？</p><hr>`;
+            if (index === 0 && (!localStorage.getItem('birthdayPuzzleState') || JSON.parse(localStorage.getItem('birthdayPuzzleState')).completedPuzzles.length === 0)) {
+                content += `<h1>親愛的 Christine，</h1><p>在準備妳生日的這段日子裡，我一直在回想我們的點點滴滴。<br>有些很傻，有些很溫暖，每一個都是構成「我們」的無價之寶。</p><p>我把其中我最珍愛的十個瞬間，變成了這份小小的挑戰，想邀請妳和我一起重溫。</p><p><strong>這不是什麼複雜的遊戲，只是我想用一個特別的方式，和妳聊聊天，看看我們之間的心靈感應有多強。</strong></p><p>每答對一題，就代表我們又找回了一段共同的回憶，<br>同時妳會得到一枚「線索碎片」。當所有碎片集齊時，就是我揭曉禮物的時刻。</p><p>生日快樂，我最愛的人。準備好開始了嗎？</p><hr>`;
             }
             const puzzle = puzzleData[index];
             content += `<h2>第 ${index + 1} 題</h2><p class="riddle">${puzzle.riddle}</p><div class="input-area"><input type="text" id="answer-input" placeholder="請在此輸入答案..." onkeydown="if(event.key==='Enter') checkAnswer()"><button onclick="checkAnswer()">提交答案</button></div>`;
             mainContainer.innerHTML = content;
-            document.getElementById('answer-input').focus();
+            const inputField = document.getElementById('answer-input');
+            if (inputField) inputField.focus();
         }
         
         function renderSuccessView(index) {
             const puzzle = puzzleData[index];
-            const photoHTML = puzzle.photo ? `<img src="${puzzle.photo}" alt="回憶照片 ${index + 1}">` : '';
+            const cacheBuster = new Date().getTime(); // 建立一個獨一無二的時間戳
+            // 【快取修正】在圖片檔名後面加上 ?v=時間戳
+            const photoHTML = puzzle.photo ? `<img src="${puzzle.photo}?v=${cacheBuster}" alt="回憶照片">` : '';
             mainContainer.innerHTML = `<div class="success-view"><h2>記憶鎖定解除。妳證明了自己。</h2><p>一段塵封的時光，被妳親手還原了。</p>${photoHTML}<p class="personal-note">“${puzzle.note}”</p><p>這是妳應得的獎勵... 一枚關鍵的「線索碎片」：</p><p class="clue-reveal">${puzzle.clues.join(', ')}</p><hr><button onclick="nextStep()">> 前往下一道詰問</button></div>`;
         }
 
         function checkAnswer() {
             const index = gameState.currentPuzzle;
             const userInput = document.getElementById('answer-input').value.trim();
+            const inputElement = document.getElementById('answer-input');
             const correctAnswers = puzzleData[index].answer;
             
             let isCorrect = false;
@@ -343,18 +341,25 @@
             }
 
             if (isCorrect) {
-                // 【BUG修正】只有當這題還沒被完成過，才加入新的線索
+                playSound('correct');
+                inputElement.classList.add('correct-flash');
+
                 if (!gameState.completedPuzzles.includes(index)) {
                     const newClues = puzzleData[index].clues;
                     gameState.collectedClues.push(...newClues);
                     gameState.completedPuzzles.push(index);
                 }
-                updateClueTracker();
-                renderSuccessView(index);
-                saveGame();
+                
+                setTimeout(() => {
+                    updateClueTracker();
+                    renderSuccessView(index);
+                    saveGame();
+                }, 600);
             } else {
-                alert("答案不對喔，再想一想！或者...妳需要提示嗎？ ;)");
-                document.getElementById('answer-input').value = "";
+                playSound('incorrect');
+                inputElement.classList.add('shake');
+                inputElement.value = "";
+                setTimeout(() => inputElement.classList.remove('shake'), 500);
             }
         }
 
@@ -368,7 +373,6 @@
             saveGame();
         }
         
-        // 【新功能】渲染最終的單字遊戲畫面
         function renderFinale() {
             let shuffledClues = [...gameState.collectedClues].sort(() => Math.random() - 0.5);
             let letterTilesHTML = shuffledClues.map((letter, i) => 
@@ -387,22 +391,20 @@
             mainContainer.innerHTML = `<h2>恭喜通關，我的記憶主人。</h2><p>妳憑藉著智慧與默契，成功還原了所有被我藏起來的珍貴回憶，<br>證明了妳是它們唯一的主人。</p><p>現在，只剩下最後一道鎖。<br>解開它，就能找到我為妳準備的真正驚喜。</p><hr><p>請用妳收集到的 16 枚線索碎片，拼出最終的答案：</p><div class="letter-pool">${letterTilesHTML}</div><p><strong>最後的提示：</strong> 這是一個工整的「<strong>8+8</strong>」組合，就像它的品牌 Logo 一樣，對稱而又充滿個性。答案本身，充滿了英倫的搖滾精神喔。</p><div class="answer-slots-container">${answerSlotsHTML}</div><div class="input-area"><button onclick="checkFinalAnswer()">揭曉最終答案</button></div>`;
         }
 
-        // 【新功能】單字遊戲的互動邏輯
         function selectLetter(tileElement, letter) {
-            const slots1 = document.querySelectorAll('#word1 .answer-slot');
-            const slots2 = document.querySelectorAll('#word2 .answer-slot');
-            const allSlots = [...slots1, ...slots2];
-
-            let emptySlot = allSlots.find(slot => slot.textContent === '');
+            playSound('place');
+            const allSlots = document.querySelectorAll('.answer-slot');
+            let emptySlot = Array.from(allSlots).find(slot => slot.textContent === '');
             
             if (emptySlot) {
                 emptySlot.textContent = letter;
-                emptySlot.dataset.tileId = tileElement.id; // 記錄是哪個字母磚塊來的
+                emptySlot.dataset.tileId = tileElement.id;
                 tileElement.classList.add('used');
             }
         }
 
         function returnLetter(slotElement) {
+            playSound('place');
             const tileId = slotElement.dataset.tileId;
             if (tileId) {
                 const tileElement = document.getElementById(tileId);
@@ -412,20 +414,41 @@
             }
         }
 
-        // 【新功能】檢查單字遊戲的答案
         function checkFinalAnswer() {
             const slots1 = document.querySelectorAll('#word1 .answer-slot');
             const slots2 = document.querySelectorAll('#word2 .answer-slot');
-            
             const word1 = Array.from(slots1).map(slot => slot.textContent).join('').toLowerCase();
             const word2 = Array.from(slots2).map(slot => slot.textContent).join('').toLowerCase();
 
             if (word1 === finalAnswer.part1 && word2 === finalAnswer.part2) {
-                mainContainer.innerHTML = `<h1>完全正確！</h1><h2>生日快樂，我生命中唯一的主角。</h2><p class="personal-note" style="font-size: 1.5em;">現在，請前往 ${finalGiftLocation}，領取屬於妳的搖滾徽章吧！</p><hr><p>—— 不再是竊賊，而是永遠愛妳的，${yourName}</p>`;
-                localStorage.removeItem('birthdayPuzzleState');
+                playSound('correct');
+                mainContainer.innerHTML = `<h1>完全正確！</h1><h2>生日快樂，我生命中唯一的主角。</h2><p>這十個碎片，只是我們故事的序章。<br>接下來，還有無數的空白等著我們一起填滿。</p><hr><div class="input-area"><button id="reveal-button" onclick="revealGift()">> 揭曉我的最終獎勵</button></div>`;
             } else {
+                playSound('incorrect');
                 alert("不對喔，再檢查一下拼字！");
             }
+        }
+        
+        function revealGift() {
+            const button = document.getElementById('reveal-button');
+            const giftText = document.createElement('p');
+            giftText.id = 'gift-location';
+            giftText.className = 'personal-note';
+            giftText.style.fontSize = '1.5em';
+            giftText.textContent = `現在，請前往 ${finalGiftLocation}，領取屬於妳的搖滾徽章吧！`;
+
+            const signature = document.createElement('p');
+            signature.textContent = `—— 不再是竊賊，而是永遠愛妳的，${yourName}`;
+            
+            button.replaceWith(giftText);
+            mainContainer.appendChild(document.createElement('hr'));
+            mainContainer.appendChild(signature);
+
+            setTimeout(() => {
+                giftText.classList.add('revealed');
+            }, 100);
+
+            localStorage.removeItem('birthdayPuzzleState');
         }
 
         // --- 遊戲初始化 ---
@@ -442,6 +465,4 @@
     </script>
 </body>
 </html>
-
-
 
