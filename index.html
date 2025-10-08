@@ -299,7 +299,7 @@
         function renderPuzzle(index) {
             let content = '';
             if (index === 0 && (!localStorage.getItem('birthdayPuzzleState') || JSON.parse(localStorage.getItem('birthdayPuzzleState')).completedPuzzles.length === 0)) {
-                content += `<h1>親愛的 Christine，</h1><p>在準備妳生日的這段日子裡，我一直在回想我們的點點滴滴。<br>有些很傻，有些很溫暖，每一個都是構成「我們」的無價之寶。</p><p>我把其中我最珍愛的十個瞬間，變成了這份小小的挑戰，想邀請妳和我一起重溫。</p><p><strong>這不是什麼複雜的遊戲，只是我想用一個特別的方式，和妳聊聊天，看看我們之間的心靈感應有多強。</strong></p><p>每答對一題，就代表我們又找回了一段共同的回憶，<br>同時妳會得到一枚「線索碎片」。當所有碎片集齊時，就是我揭曉禮物的時刻。</p><p>生日快樂，我最愛的人。準備好開始了嗎？</p><hr>`;
+                content += `<h1>親愛的 Christine，</h1><p>在準備妳生日的這段日子裡，我一直在回想我們的點點滴滴。<br>有些很傻，有些很溫暖，每一個都是構成「我們」的無價之寶。</p><p>我把其中我最珍愛的十個瞬間，變成了這份小小的挑戰，想邀請妳和我一起重溫。</p><p>每答對一題，就代表我們又找回了一段共同的回憶，<br>同時妳會得到一枚「線索碎片」。當所有碎片集齊時，就是我揭曉禮物的時刻。</p><p>生日快樂，我最愛的人。準備好開始了嗎？</p><hr>`;
             }
             const puzzle = puzzleData[index];
             content += `<h2>第 ${index + 1} 題</h2><p class="riddle">${puzzle.riddle}</p><div class="input-area"><input type="text" id="answer-input" placeholder="請在此輸入答案..." onkeydown="if(event.key==='Enter') checkAnswer()"><button onclick="checkAnswer()">提交答案</button></div>`;
@@ -377,7 +377,6 @@
                 </div>
             `;
             
-            // 【結局更新】採用版本A的文案
             mainContainer.innerHTML = `<h2>妳看，妳都記得！</h2><p>這些我們共同經歷的瞬間，因為妳還記得，而變得更加珍貴。</p><p>現在，旅程只剩下最後一個小小的關卡。<br>請將妳收集到的所有線索碎片，拼湊出最後的答案，它會為妳揭曉我準備的禮物。</p><hr><div class="letter-pool">${letterTilesHTML}</div><p><strong>最後的提示：</strong> 這是一個工整的「<strong>8+8</strong>」組合，就像它的品牌 Logo 一樣，對稱而又充滿個性。答案本身，充滿了英倫的搖滾精神喔。</p><div class="answer-slots-container">${answerSlotsHTML}</div><div class="input-area"><button onclick="checkFinalAnswer()">揭曉最終答案</button></div>`;
             window.scrollTo(0, 0);
         }
@@ -413,7 +412,6 @@
 
             if (word1 === finalAnswer.part1 && word2 === finalAnswer.part2) {
                 playSound('correct');
-                // 【結局更新】採用版本A的文案
                 mainContainer.innerHTML = `<h1>拼對了！妳真的太棒了！</h1><h2>生日快樂，我最愛的 Christine。</h2><p>希望妳喜歡這趟小小的回憶旅行，也希望妳會喜歡這份禮物。我們的故事，未完待續喔！</p><hr><div class="input-area"><button id="reveal-button" onclick="revealGift()">> 揭曉我的最終獎勵</button></div>`;
             } else {
                 playSound('incorrect');
@@ -430,7 +428,6 @@
             giftText.textContent = `現在，請前往 ${finalGiftLocation}，領取屬於妳的搖滾徽章吧！`;
 
             const signature = document.createElement('p');
-            // 【結局更新】採用更匹配的署名
             signature.textContent = `—— 永遠愛妳的，${yourName}`;
             
             button.replaceWith(giftText);
