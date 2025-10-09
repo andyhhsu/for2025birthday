@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>一個只屬於妳的挑戰</title>
-    <!-- 快取清除 V10 -->
+    <!-- 快取清除 V12 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <style>
         /* --- 整體頁面樣式 --- */
@@ -150,6 +150,12 @@
 
         #gift-location { opacity: 0; transition: opacity 1s ease-in-out; }
         #gift-location.revealed { opacity: 1; }
+
+        .signature-img {
+            max-width: 250px;
+            height: auto;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -219,7 +225,7 @@
                 answer: "joguman",
                 clues: ["V"],
                 photo: "https://andyhhsu.github.io/for2025birthday/photo8.jpg",
-                note: "說好的路跑，結果變成我們的專屬攝影棚（笑）。" // 【已更新】
+                note: "說好的路跑，結果變成我們的專屬攝影棚（笑）。"
             },
             {
                 riddle: "我們共同達到的最高點。從那裡俯瞰，腳下的城市像一塊精密的電路板，河流是閃爍的銀色焊錫。這座建築坐落於首爾一個巨大的複合園區內，旁邊就是一座著名的室內遊樂園。它的三字名稱是？",
@@ -299,7 +305,7 @@
         function renderPuzzle(index) {
             let content = '';
             if (index === 0 && (!localStorage.getItem('birthdayPuzzleState') || JSON.parse(localStorage.getItem('birthdayPuzzleState')).completedPuzzles.length === 0)) {
-                content += `<h1>親愛的 Christine，</h1><p>歡迎來到這座為妳打造的記憶迷宮。</p><p>迷宮的深處，藏著十個只有妳才知道答案的秘密瞬間。<br>而妳的記憶，是這趟旅程唯一的地圖與指南針。</p><p>每通過一道關卡，一段共同的回憶就會解鎖，<br>同時妳會得到一枚「線索碎片」。當所有碎片集齊時，<br>迷宮的出口，就是禮物的藏身之處。</p><p>生日快樂，我最愛的人。祝妳探險順利！</p><hr>`;
+                content += `<h1>親愛的 Christine</h1><p>歡迎來到這座為妳打造的記憶迷宮。</p><p>迷宮的深處，藏著十個只有妳才知道答案的秘密瞬間。<br>而妳的記憶，是這趟旅程唯一的地圖與指南針。</p><p>每通過一道關卡，一段共同的回憶就會解鎖，<br>同時妳會得到一枚「線索碎片」。當所有碎片集齊時，<br>迷宮的出口，就是禮物的藏身之處。</p><p>生日快樂，我最愛的人。祝妳探險順利！</p><hr>`;
             }
             const puzzle = puzzleData[index];
             content += `<h2>第 ${index + 1} 題</h2><p class="riddle">${puzzle.riddle}</p><div class="input-area"><input type="text" id="answer-input" placeholder="請在此輸入答案..." onkeydown="if(event.key==='Enter') checkAnswer()"><button onclick="checkAnswer()">提交答案</button></div>`;
@@ -427,12 +433,14 @@
             giftText.style.fontSize = '1.5em';
             giftText.textContent = `現在，請前往 ${finalGiftLocation}，領取屬於妳的搖滾徽章吧！`;
 
-            const signature = document.createElement('p');
-            signature.textContent = `—— 永遠愛妳的，${yourName}`;
+            const signatureImg = document.createElement('img');
+            signatureImg.src = 'https://andyhhsu.github.io/for2025birthday/signature.png';
+            signatureImg.alt = 'Signature';
+            signatureImg.className = 'signature-img';
             
             button.replaceWith(giftText);
             mainContainer.appendChild(document.createElement('hr'));
-            mainContainer.appendChild(signature);
+            mainContainer.appendChild(signatureImg);
 
             setTimeout(() => {
                 giftText.classList.add('revealed');
