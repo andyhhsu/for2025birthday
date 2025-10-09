@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>一個只屬於妳的挑戰</title>
-    <!-- 快取清除 V7 -->
+    <!-- 快取清除 V8 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <style>
         /* --- 整體頁面樣式 --- */
@@ -299,7 +299,7 @@
         function renderPuzzle(index) {
             let content = '';
             if (index === 0 && (!localStorage.getItem('birthdayPuzzleState') || JSON.parse(localStorage.getItem('birthdayPuzzleState')).completedPuzzles.length === 0)) {
-                content += `<h1>親愛的 Christine，</h1><p>在準備妳生日的這段日子裡，我一直在回想我們的點點滴滴。<br>有些很傻，有些很溫暖，每一個都是構成「我們」的無價之寶。</p><p>我把其中我最珍愛的十個瞬間，變成了這份小小的挑戰，想邀請妳和我一起重溫。</p><p>每答對一題，就代表我們又找回了一段共同的回憶，<br>同時妳會得到一枚「線索碎片」。當所有碎片集齊時，就是我揭曉禮物的時刻。</p><p>生日快樂，我最愛的人。準備好開始了嗎？</p><hr>`;
+                content += `<h1>親愛的 Christine</h1><p>歡迎來到這座為妳打造的記憶迷宮。</p><p>迷宮的深處，藏著十個只有妳才知道答案的秘密瞬間。<br>而妳的記憶，是這趟旅程唯一的地圖與指南針。</p><p>每通過一道關卡，一段共同的回憶就會解鎖，<br>同時妳會得到一枚「線索碎片」。當所有碎片集齊時，<br>迷宮的出口，就是禮物的藏身之處。</p><p>生日快樂！祝妳探險順利！</p><hr>`;
             }
             const puzzle = puzzleData[index];
             content += `<h2>第 ${index + 1} 題</h2><p class="riddle">${puzzle.riddle}</p><div class="input-area"><input type="text" id="answer-input" placeholder="請在此輸入答案..." onkeydown="if(event.key==='Enter') checkAnswer()"><button onclick="checkAnswer()">提交答案</button></div>`;
