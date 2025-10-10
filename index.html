@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>一個只屬於妳的挑戰</title>
-    <!-- 快取清除 V12 -->
+    <!-- 快取清除 V17 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <style>
         /* --- 整體頁面樣式 --- */
@@ -160,7 +160,7 @@
 </head>
 <body>
     <canvas id="bg-canvas"></canvas>
-    <div id="clue-tracker">線索碎片：<span id="clue-display"></span></div>
+    <div id="clue-tracker">星塵碎片：<span id="clue-display"></span></div>
     <div class="container" id="main-container"></div>
 
     <script>
@@ -172,70 +172,70 @@
 
         const puzzleData = [
             {
-                riddle: "年份，是我們記憶中最後一個可以自由呼吸、無需口罩的完整年份。而日期，在俄羅斯，這一天是紀念勝利的『勝利日』。",
+                riddle: "星盤的預言始於一顆「初始之星」。它的年份，被記錄為世界還能自由呼吸的最後一個完整年份；而它的日期，則是一個紀念『勝利』的日子。請詠唱出構成我們星座起點的 8 位數座標。",
                 answer: ["20190509", "2019/05/09"],
                 clues: ["E", "S"],
                 photo: null,
                 note: "從那天起，我們之間，日日是好日。"
             },
             {
-                riddle: "這道謎題，無關異國風情，只關乎一個重要的『第一次』。為了慶祝你的第一個生日，我訂的餐廳不是牛排，也不是義大利麵。請問，那個為我們揭開無數慶祝序幕的二字料理『風格』是什麼？",
+                riddle: "妳的第一個生日，是「慶典之星」首次在妳的命運中升起的日子。為了紀念這個重要的星象，我們選擇了一種充滿酸甜辣風味的料理來慶祝，而非傳統的西餐。請說出那晚為妳點亮第一顆生日之星的二字料理『風格』。",
                 answer: "泰式",
                 clues: ["T", "O"],
                 photo: "https://andyhhsu.github.io/for2025birthday/photo2.jpg",
                 note: "那天的主角是你，但最秀色可餐的也是你。"
             },
             {
-                riddle: "我們的首次旅行。那座城市被現代人戲稱為『一個適合眾神居住、卻不太適合人類工作的奇幻之地』，並且，它是台灣六都之中，至今唯一沒有捷運系統通車的直轄市。這座步調獨特的城市是？",
+                riddle: "古老的星圖記載著我們的第一趟聯合遠征。那顆「旅途之星」所指向的城市，以其獨特的「甜味星雲」聞名，且至今仍未被現代的『鋼鐵軌道』所貫穿。請說出這座受星辰眷顧的城市之名。",
                 answer: "台南",
                 clues: ["W", "O"],
                 photo: "https://andyhhsu.github.io/for2025birthday/photo3.jpg",
                 note: "我們旅程的起點，也是故事的序篇。"
             },
             {
-                riddle: "這道謎題，關於我們最平凡也最珍貴的日常。無論是在公園的草地上，還是在河堤的夕陽下，總有『他』的身影陪著我們散步。請問，我們最棒的散步夥伴，他的五個字母英文名字是？",
+                riddle: "在妳的星盤中，那顆忠誠的「守護之星」備受寵愛。妳時常為它獻上美味的零食作為「祭品」，而我們則會偶爾帶它去河堤或公園，進行日落時分的「星辰巡禮」。請詠唱出這位備受寵愛的毛茸茸星辰守護者，其五個字母的真名。",
                 answer: "Sunny",
                 clues: ["D", "I"],
                 photo: "https://andyhhsu.github.io/for2025birthday/photo4.jpg",
                 note: "我們生命中最溫暖、最療癒的存在。"
             },
             {
-                riddle: "關於我們的第一次出國旅行。比起大阪的章魚燒和京都的清水寺，我猜你印象最深的，應該是在奈良被鹿『追殺』的陰影吧？請問，這個讓你留下爆笑陰影的二字國度是哪裡？",
+                riddle: "當命運第一次引領妳跨越海洋，「跨越之星」隨之閃耀。星象顯示，在那片土地的奈良公園，妳曾遭遇一場來自「聖鹿」的追逐儀式，為旅程增添了意想不到的預兆。請指認出這片留下奇妙回憶的國度。",
                 answer: "日本",
                 clues: ["W", "E"],
                 photo: "https://andyhhsu.github.io/for2025birthday/photo5.jpg",
                 note: "希望奈良的鹿，沒有在你心裡留下太大的陰影（笑）。"
             },
             {
-                riddle: "那場演唱會，對我們來說不只是一晚的狂歡，而是一個『新篇章』的開始。從那天起，一起追蹤她們的新歌、看她们的消息，成了我們之間的一個新默契。請問，開啟了我們這個共同話題的團體，其名稱為何？",
+                riddle: "星象紀錄顯示，那一晚，一顆「新星」在妳們的共同天宮中升起。它的名字本身就是一個宇宙級的矛盾體，結合了「初生的純真」與「神話中的巨獸」。請說出這顆在妳們星盤中升起的新星之名。",
                 answer: "babymonster",
                 clues: ["N", "N"],
                 photo: "https://andyhhsu.github.io/for2025birthday/photo6.jpg",
                 note: "陪你一起聲嘶力竭，是我做過最搖滾的事。"
             },
             {
-                riddle: "那款充滿了我們共同焦慮的遊戲。它的背景音樂，就是我們互相大喊『飯燒焦了！』和『盤子在哪？！』的聲音。遊戲的單一英文詞標題，完美描述了我們 90% 的料理成品最終的狀態。它是什麼？",
+                riddle: "星盤曾預示一場名為「混沌」的廚房儀式。儀式中，你們最常詠唱的咒語是「飯燒焦了！」和「盤子在哪？！」。而儀式的英文名稱，也預言了其中 90% 的悲慘结局。請解讀出這次儀式的英文名稱。",
                 answer: "overcooked",
                 clues: ["E"],
                 photo: null,
                 note: "就算手忙腳亂，我們依然是彼此的最佳拍檔。"
             },
             {
-                riddle: "我們對一個角色的愛，可以體現在很多地方。從追遍各地的快閃店，到收集越來越多的週邊，最經典的還是那次路跑——我們興沖沖地報了名，結果天氣一熱，直接變成他的個人拍照會。請問，這位讓我們心甘情願為他做這麼多傻事的綠色夥伴，他的英文名字是？",
+                riddle: "天空中有一顆綠色的「引力之星」，它的魅力強大到讓我們心甘情願地追隨它的軌跡——從一次次的快閃店，到那場最終變成攝影會的路跑。請說出這位綠色星辰的名字。",
                 answer: "joguman",
                 clues: ["V"],
                 photo: "https://andyhhsu.github.io/for2025birthday/photo8.jpg",
                 note: "說好的路跑，結果變成我們的專屬攝影棚（笑）。"
             },
             {
-                riddle: "我們共同達到的最高點。從那裡俯瞰，腳下的城市像一塊精密的電路板，河流是閃爍的銀色焊錫。這座建築坐落於首爾一個巨大的複合園區內，旁邊就是一座著名的室內遊樂園。它的三字名稱是？",
+                riddle: "預言中，你們曾共同登上通往天際的「觀星塔」。從那裡俯瞰，首爾的夜景如同一張由光構成的、閃爍的星圖電路板。該塔坐落於一座大型園區內，旁鄰一座室內遊樂園。請指認它的三字名稱。",
                 answer: "樂天塔",
                 clues: ["I"],
                 photo: "https://andyhhsu.github.io/for2025birthday/photo9.jpg",
                 note: "和你一起看過的風景，永遠是最美的。"
             },
             {
-                riddle: "那趟外島之旅，白天熱得讓人懷疑人生，但夜晚卻給了我們最棒的驚喜。我們站在漆黑的海邊，看著浪花拍打出藍色的螢光，留下了那張珍貴的合照。請問，那片成為我們最夢幻合照背景的奇景，它的三字名稱是什麼？",
+                riddle: "在一次白日酷熱的試煉後，命運在夜晚揭示了一片「活的星海」。無數微小的生命體發出幽藍光芒，將大海變成了流動的銀河，也成為了妳們最夢幻合照的背景。請詠唱出這片奇景的三字真名。",
                 answer: "藍眼淚",
                 clues: ["V"],
                 photo: "https://andyhhsu.github.io/for2025birthday/photo10.jpg",
@@ -302,14 +302,16 @@
             display.textContent = clueText.trim();
         }
 
+        // 【新功能】專門渲染歡迎畫面的函數
+        function renderWelcome() {
+            mainContainer.innerHTML = `<h1>親愛的占星師 Christine，</h1><p>生日快樂。</p><p>傳說，每一段深刻的關係，都有專屬於自己的星盤。<br>在我們的星盤上，有十顆「命運之星」，它們共同定義了我們的過去與未來。</p><p>今晚，這些星星的光芒變得黯淡，被古老的謎語所遮蔽。<br>只有妳，這位唯一能解讀星語的占星師，才能讓它們重放光芒。</p><p>妳的任務，就是觀測星象，詠唱出正確的答案。<br>每點亮一顆星，妳將尋回一枚構成最終星圖的「星塵碎片」。</p><p>當星圖完整時，它將為妳召喚出星盤預言中，<br>那份命中註定屬於妳的禮物。</p><p>準備好，開始解讀妳的命運了嗎？</p><hr><div class="input-area"><button onclick="renderPuzzle(0)">開始解讀</button></div>`;
+            window.scrollTo(0, 0);
+        }
+
         function renderPuzzle(index) {
-            let content = '';
-            if (index === 0 && (!localStorage.getItem('birthdayPuzzleState') || JSON.parse(localStorage.getItem('birthdayPuzzleState')).completedPuzzles.length === 0)) {
-                content += `<h1>親愛的 Christine</h1><p>歡迎來到這座為妳打造的記憶迷宮。</p><p>迷宮的深處，藏著十個只有妳才知道答案的秘密瞬間。<br>而妳的記憶，是這趟旅程唯一的地圖與指南針。</p><p>每通過一道關卡，一段共同的回憶就會解鎖，<br>同時妳會得到一枚「線索碎片」。當所有碎片集齊時，<br>迷宮的出口，就是禮物的藏身之處。</p><p>生日快樂，我最愛的人。祝妳探險順利！</p><hr>`;
-            }
             const puzzle = puzzleData[index];
-            content += `<h2>第 ${index + 1} 題</h2><p class="riddle">${puzzle.riddle}</p><div class="input-area"><input type="text" id="answer-input" placeholder="請在此輸入答案..." onkeydown="if(event.key==='Enter') checkAnswer()"><button onclick="checkAnswer()">提交答案</button></div>`;
-            mainContainer.innerHTML = content;
+            // 【邏輯修改】將開場白移除，此函數只負責渲染謎題
+            mainContainer.innerHTML = `<h2>第 ${index + 1} 顆星</h2><p class="riddle">${puzzle.riddle}</p><div class="input-area"><input type="text" id="answer-input" placeholder="請在此輸入答案..." onkeydown="if(event.key==='Enter') checkAnswer()"><button onclick="checkAnswer()">點亮星星</button></div>`;
             const inputField = document.getElementById('answer-input');
             if (inputField) inputField.focus();
             window.scrollTo(0, 0);
@@ -318,7 +320,7 @@
         function renderSuccessView(index) {
             const puzzle = puzzleData[index];
             const photoHTML = puzzle.photo ? `<img src="${puzzle.photo}" alt="回憶照片">` : '';
-            mainContainer.innerHTML = `<div class="success-view"><h2>記憶鎖定解除。妳證明了自己。</h2><p>一段塵封的時光，被妳親手還原了。</p>${photoHTML}<p class="personal-note">“${puzzle.note}”</p><p>這是妳應得的獎勵... 一枚關鍵的「線索碎片」：</p><p class="clue-reveal">${puzzle.clues.join(', ')}</p><hr><button onclick="nextStep()">> 前往下一道詰問</button></div>`;
+            mainContainer.innerHTML = `<div class="success-view"><h2>命運之星，已被點亮。</h2><p>一段被遮蔽的記憶，因妳而重放光芒。</p>${photoHTML}<p class="personal-note">“${puzzle.note}”</p><p>妳獲得了一枚「星塵碎片」：</p><p class="clue-reveal">${puzzle.clues.join(', ')}</p><hr><button onclick="nextStep()">> 觀測下一顆星</button></div>`;
             window.scrollTo(0, 0);
         }
 
@@ -383,7 +385,7 @@
                 </div>
             `;
             
-            mainContainer.innerHTML = `<h2>妳看，妳都記得！</h2><p>這些我們共同經歷的瞬間，因為妳還記得，而變得更加珍貴。</p><p>現在，旅程只剩下最後一個小小的關卡。<br>請將妳收集到的所有線索碎片，拼湊出最後的答案，它會為妳揭曉我準備的禮物。</p><hr><div class="letter-pool">${letterTilesHTML}</div><p><strong>最後的提示：</strong> 這是一個工整的「<strong>8+8</strong>」組合。</p><div class="answer-slots-container">${answerSlotsHTML}</div><div class="input-area"><button onclick="checkFinalAnswer()">揭曉最終答案</button></div>`;
+            mainContainer.innerHTML = `<h2>星盤，已然清晰。</h2><p>謝謝妳，最偉大的占星師。<br>因為妳的智慧，我們黯淡的命運之星，再次閃耀出璀璨的光芒。</p><p>現在，是時候揭曉預言的最後篇章了。<br>請用妳收集到的星塵碎片，拼出召喚聖物的品牌真名。</p><hr><div class="letter-pool">${letterTilesHTML}</div><p><strong>最後的提示：</strong> 這是一個工整的「<strong>8+8</strong>」組合。</p><div class="answer-slots-container">${answerSlotsHTML}</div><div class="input-area"><button onclick="checkFinalAnswer()">完成星圖</button></div>`;
             window.scrollTo(0, 0);
         }
 
@@ -418,7 +420,7 @@
 
             if (word1 === finalAnswer.part1 && word2 === finalAnswer.part2) {
                 playSound('correct');
-                mainContainer.innerHTML = `<h1>拼對了！妳真的太棒了！</h1><h2>生日快樂，我最愛的 Christine。</h2><p>希望妳喜歡這趟小小的回憶旅行，也希望妳會喜歡這份禮物。我們的故事，未完待續喔！</p><hr><div class="input-area"><button id="reveal-button" onclick="revealGift()">> 揭曉我的最終獎勵</button></div>`;
+                mainContainer.innerHTML = `<h1>聖物，已被召喚。</h1><h2>生日快樂，我命中註定的 Christine。</h2><p>希望妳喜歡這場解讀命運的儀式。<br>這份禮物，正是星辰為妳準備的、象徵著永恆與守護的護身符。</p><hr><div class="input-area"><button id="reveal-button" onclick="revealGift()">> 領取妳的護身符</button></div>`;
             } else {
                 playSound('incorrect');
                 alert("不對喔，再檢查一下拼字！");
@@ -449,9 +451,12 @@
             localStorage.removeItem('birthdayPuzzleState');
         }
 
-        // --- 遊戲初始化 ---
+        // --- 【邏輯修改】遊戲初始化 ---
         loadGame();
-        if (gameState.currentPuzzle >= puzzleData.length) {
+        if (gameState.currentPuzzle === 0 && gameState.completedPuzzles.length === 0) {
+            // 如果是全新開始，或是在第一關刷新，都顯示歡迎頁面
+            renderWelcome();
+        } else if (gameState.currentPuzzle >= puzzleData.length) {
             renderFinale();
         } else {
             renderPuzzle(gameState.currentPuzzle);
