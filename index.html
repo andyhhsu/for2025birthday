@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>一個只屬於妳的挑戰</title>
-    <!-- 快取清除 V17 -->
+    <!-- 快取清除 V20 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <style>
         /* --- 整體頁面樣式 --- */
@@ -52,7 +52,7 @@
             margin: 80px auto 40px auto; 
         }
 
-        h1, h2 { color: var(--primary-color); }
+        h1, h2, h3 { color: var(--primary-color); }
         h1 { font-size: 1.8em; }
         p { line-height: 1.8; font-size: 1.1em; }
 
@@ -156,6 +156,28 @@
             height: auto;
             margin-top: 20px;
         }
+
+        .final-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+        .final-gallery img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            border: 2px solid var(--border-color);
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+         .final-gallery img:hover {
+             opacity: 1;
+             transform: scale(1.05);
+         }
     </style>
 </head>
 <body>
@@ -171,7 +193,7 @@
         const yourName = "你的名字"; // 【請修改】
 
         const puzzleData = [
-            {
+             {
                 riddle: "星盤的預言始於一顆「初始之星」。它的年份，被記錄為世界還能自由呼吸的最後一個完整年份；而它的日期，則是一個紀念『勝利』的日子。請詠唱出構成我們星座起點的 8 位數座標。",
                 answer: ["20190509", "2019/05/09"],
                 clues: ["E", "S"],
@@ -244,7 +266,7 @@
         ];
 
         const finalAnswer = { part1: "vivienne", part2: "westwood" };
-        const finalGiftLocation = "臥室的書櫃第三層"; // 【請務必修改這裡】
+        const finalGiftLocation = "我的房間衣櫃深處"; // 【請務必修改這裡為您的最終地點】
 
         const sounds = {
             correct: new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 } }).toDestination(),
@@ -302,15 +324,13 @@
             display.textContent = clueText.trim();
         }
 
-        // 【新功能】專門渲染歡迎畫面的函數
         function renderWelcome() {
-            mainContainer.innerHTML = `<h1>親愛的占星師 Christine，</h1><p>生日快樂。</p><p>傳說，每一段深刻的關係，都有專屬於自己的星盤。<br>在我們的星盤上，有十顆「命運之星」，它們共同定義了我們的過去與未來。</p><p>今晚，這些星星的光芒變得黯淡，被古老的謎語所遮蔽。<br>只有妳，這位唯一能解讀星語的占星師，才能讓它們重放光芒。</p><p>妳的任務，就是觀測星象，詠唱出正確的答案。<br>每點亮一顆星，妳將尋回一枚構成最終星圖的「星塵碎片」。</p><p>當星圖完整時，它將為妳召喚出星盤預言中，<br>那份命中註定屬於妳的禮物。</p><p>準備好，開始解讀妳的命運了嗎？</p><hr><div class="input-area"><button onclick="renderPuzzle(0)">開始解讀</button></div>`;
+             mainContainer.innerHTML = `<h1>親愛的占星師 Christine</h1><p>生日快樂。</p><p>傳說，每一段深刻的關係，都有專屬於自己的星盤。<br>在我們的星盤上，有十顆「命運之星」，它們共同定義了我們的過去與未來。</p><p>今晚，這些星星的光芒變得黯淡，被古老的謎語所遮蔽。<br>只有妳，這位唯一能解讀星語的占星師，才能讓它們重放光芒。</p><p>妳的任務，就是觀測星象，詠唱出正確的答案。<br>每點亮一顆星，妳將尋回一枚構成最終星圖的「星塵碎片」。</p><p>當星圖完整時，它將為妳召喚出星盤預言中，<br>那份命中註定屬於妳的禮物。</p><p>準備好開始解讀妳的命運了嗎？</p><div class="input-area"><button onclick="renderPuzzle(0)">開始解讀</button></div>`;
             window.scrollTo(0, 0);
         }
 
         function renderPuzzle(index) {
             const puzzle = puzzleData[index];
-            // 【邏輯修改】將開場白移除，此函數只負責渲染謎題
             mainContainer.innerHTML = `<h2>第 ${index + 1} 顆星</h2><p class="riddle">${puzzle.riddle}</p><div class="input-area"><input type="text" id="answer-input" placeholder="請在此輸入答案..." onkeydown="if(event.key==='Enter') checkAnswer()"><button onclick="checkAnswer()">點亮星星</button></div>`;
             const inputField = document.getElementById('answer-input');
             if (inputField) inputField.focus();
@@ -420,7 +440,15 @@
 
             if (word1 === finalAnswer.part1 && word2 === finalAnswer.part2) {
                 playSound('correct');
-                mainContainer.innerHTML = `<h1>聖物，已被召喚。</h1><h2>生日快樂，我命中註定的 Christine。</h2><p>希望妳喜歡這場解讀命運的儀式。<br>這份禮物，正是星辰為妳準備的、象徵著永恆與守護的護身符。</p><hr><div class="input-area"><button id="reveal-button" onclick="revealGift()">> 領取妳的護身符</button></div>`;
+                let galleryHTML = '<div class="final-gallery">';
+                puzzleData.forEach(puzzle => {
+                    if(puzzle.photo) {
+                        galleryHTML += `<img src="${puzzle.photo}" alt="回憶照片">`;
+                    }
+                });
+                galleryHTML += '</div>';
+
+                mainContainer.innerHTML = `<h1>聖物，已被召喚。</h1><h2>生日快樂 Christine！</h2><p>希望妳喜歡這場解讀命運的儀式。<br>這份禮物，正是星辰為妳準備的、象徵著永恆與守護的護身符。</p><hr><h3>✨ 妳解鎖的回憶 ✨</h3>${galleryHTML}<hr><div class="input-area"><button id="reveal-button" onclick="revealGift()">> 領取妳的禮物</button></div>`;
             } else {
                 playSound('incorrect');
                 alert("不對喔，再檢查一下拼字！");
@@ -428,33 +456,33 @@
         }
         
         function revealGift() {
-            const button = document.getElementById('reveal-button');
+            mainContainer.innerHTML = ''; // 清空所有內容
+
             const giftText = document.createElement('p');
             giftText.id = 'gift-location';
             giftText.className = 'personal-note';
             giftText.style.fontSize = '1.5em';
-            giftText.textContent = `現在，請前往 ${finalGiftLocation}，領取屬於妳的搖滾徽章吧！`;
+            // 【結局更新】修改禮物地點文字，加入<br>換行
+            giftText.innerHTML = `現在，請前往我的房間衣櫃深處，<br>領取屬於妳的生日禮物！`; 
+            mainContainer.appendChild(giftText);
 
             const signatureImg = document.createElement('img');
             signatureImg.src = 'https://andyhhsu.github.io/for2025birthday/signature.png';
             signatureImg.alt = 'Signature';
             signatureImg.className = 'signature-img';
-            
-            button.replaceWith(giftText);
-            mainContainer.appendChild(document.createElement('hr'));
             mainContainer.appendChild(signatureImg);
 
             setTimeout(() => {
-                giftText.classList.add('revealed');
-            }, 100);
+                 const revealedText = document.getElementById('gift-location');
+                 if(revealedText) revealedText.classList.add('revealed');
+            }, 50);
 
             localStorage.removeItem('birthdayPuzzleState');
         }
 
-        // --- 【邏輯修改】遊戲初始化 ---
+        // --- 遊戲初始化 ---
         loadGame();
         if (gameState.currentPuzzle === 0 && gameState.completedPuzzles.length === 0) {
-            // 如果是全新開始，或是在第一關刷新，都顯示歡迎頁面
             renderWelcome();
         } else if (gameState.currentPuzzle >= puzzleData.length) {
             renderFinale();
